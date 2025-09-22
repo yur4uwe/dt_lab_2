@@ -1,9 +1,9 @@
 package main
 
 import (
+	"binrels"
 	"flag"
 	"fmt"
-	"lab/relationships"
 )
 
 const (
@@ -44,8 +44,8 @@ func main() {
 
 	rels := []string{"О", "З", "Л", "В"}
 
-	is_same := relationships.Zero(len(rels))
-	not_colder := relationships.Zero(len(rels))
+	is_same := binrels.Zero(len(rels))
+	not_colder := binrels.Zero(len(rels))
 
 	is_same[Fall][Fall] = true
 	is_same[Winter][Winter] = true
@@ -61,63 +61,63 @@ func main() {
 	not_colder[Summer][Spring] = true
 	not_colder[Summer][Winter] = true
 
-	not_colder = relationships.Union(not_colder, is_same)
+	not_colder = binrels.Union(not_colder, is_same)
 
 	getMatrix := set(is_same, not_colder)
 
 	if *runAll || *to_print {
 		fmt.Println("Is Same:")
-		relationships.Print(rels, is_same)
+		binrels.PrintWithSource(rels, is_same)
 		fmt.Println("\nNot Colder:")
-		relationships.Print(rels, not_colder)
+		binrels.PrintWithSource(rels, not_colder)
 	}
 
 	if *runAll || *intersect {
-		res := relationships.Intersection(is_same, not_colder)
+		res := binrels.Intersection(is_same, not_colder)
 		fmt.Println("\nIntersection:")
-		relationships.Print(rels, res)
+		binrels.PrintWithSource(rels, res)
 	}
 	if *runAll || *union {
-		res := relationships.Union(is_same, not_colder)
+		res := binrels.Union(is_same, not_colder)
 		fmt.Println("\nUnion:")
-		relationships.Print(rels, res)
+		binrels.PrintWithSource(rels, res)
 	}
 	if *runAll || *diff {
-		res := relationships.Diff(is_same, not_colder)
+		res := binrels.Diff(is_same, not_colder)
 		fmt.Println("\nDifference (is_same - not_colder):")
-		relationships.Print(rels, res)
+		binrels.PrintWithSource(rels, res)
 	}
 	if *runAll || *symmDiff {
-		res := relationships.SymmDiff(is_same, not_colder)
+		res := binrels.SymmDiff(is_same, not_colder)
 		fmt.Println("\nSymmetric Difference:")
-		relationships.Print(rels, res)
+		binrels.PrintWithSource(rels, res)
 	}
 	if *runAll || *composition {
-		res := relationships.Composition(is_same, not_colder)
+		res := binrels.Composition(is_same, not_colder)
 		fmt.Println("\nComposition (is_same o not_colder):")
-		relationships.Print(rels, res)
+		binrels.PrintWithSource(rels, res)
 	}
 	if *runAll || *reverse != 0 {
 		var trgt = getMatrix(*reverse)
 
 		if trgt != nil {
-			res := relationships.Transpose(trgt)
+			res := binrels.Transpose(trgt)
 			fmt.Println("\nTranspose:")
-			relationships.Print(rels, res)
+			binrels.PrintWithSource(rels, res)
 		}
 	}
 	if *runAll || *complement != 0 {
 		var trgt = getMatrix(*complement)
 
 		if trgt != nil {
-			res := relationships.Complement(trgt)
+			res := binrels.Complement(trgt)
 			fmt.Println("\nComplement:")
-			relationships.Print(rels, res)
+			binrels.PrintWithSource(rels, res)
 		}
 	}
 	if *runAll || *top_int > -1 && *top_int < len(rels) {
-		same_top_int := relationships.TopIntersection(is_same, *top_int)
-		not_colder_top_int := relationships.TopIntersection(not_colder, *top_int)
+		same_top_int := binrels.TopIntersection(is_same, *top_int)
+		not_colder_top_int := binrels.TopIntersection(not_colder, *top_int)
 
 		fmt.Printf("\nTop Intersection of is_same with %s:\n", rels[*top_int])
 		for _, v := range same_top_int {
@@ -129,8 +129,8 @@ func main() {
 		}
 	}
 	if *runAll || *bottom_int > -1 && *bottom_int < len(rels) {
-		same_bottom_int := relationships.BottomIntersection(is_same, *bottom_int)
-		not_colder_bottom_int := relationships.BottomIntersection(not_colder, *bottom_int)
+		same_bottom_int := binrels.BottomIntersection(is_same, *bottom_int)
+		not_colder_bottom_int := binrels.BottomIntersection(not_colder, *bottom_int)
 
 		fmt.Printf("\nBottom Intersection of is_same with %s:\n", rels[*bottom_int])
 		for _, v := range same_bottom_int {
@@ -143,9 +143,8 @@ func main() {
 	}
 	if *runAll || *def_dom > -1 && *def_dom < 2 {
 		var trgt = getMatrix(*def_dom)
-
 		if trgt != nil {
-			res := relationships.DefinitionDomain(trgt)
+			res := binrels.DefinitionDomain(trgt)
 			fmt.Println("\nDefinition Domain:")
 			if len(res) == 0 {
 				fmt.Println("∅")
@@ -159,7 +158,7 @@ func main() {
 		var trgt = getMatrix(*mean_dom)
 
 		if trgt != nil {
-			res := relationships.MeaningDomain(trgt)
+			res := binrels.MeaningDomain(trgt)
 			fmt.Println("\nMeaning Domain:")
 			if len(res) == 0 {
 				fmt.Println("∅")
